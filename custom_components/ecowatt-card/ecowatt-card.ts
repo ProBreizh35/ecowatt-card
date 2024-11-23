@@ -85,7 +85,7 @@ export class EcoWattCard extends LitElement {
       if (! state.attributes) {
         return this._showError('No attribute found');
       }
-      if (! state.attributes.signals) {
+      if (! state.attributes.level_code) {
         return this._showError('No EcoWatt data found');
       }
     }
@@ -174,29 +174,29 @@ export class EcoWattCard extends LitElement {
     const config = this.config;
     const state = this.hass!.states[config.entity!];
 
-    const date = new Date(state.attributes.signals[0].jour);
+    const date = new Date(state.attributes.level_code[0].jour);
     const jours = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"];
     this.config.data = {generation: date, days: []};
 
     const days: any[] = [];
 
     // on copie les données
-    for (let i = 0; i < state.attributes.signals.length; i++) {
-      const signal = state.attributes.signals[i];
+    for (let i = 0; i < state.attributes.level_code.length; i++) {
+      const level_code = state.attributes.level_code[i];
 
       const heures: any[] = [];
-      for (let j = 0; j < signal.values.length; j++) {
+      for (let j = 0; j < level_code.values.length; j++) {
         heures.push({
-          step: signal.values[j].pas,
-          level: signal.values[j].hvalue
+          step: level_code.values[j].pas,
+          level: level_code.values[j].hvalue
         });
       }
 
       days.push({
-        day: new Date(signal.jour),
-        strDay: jours[new Date(signal.jour).getDay()],
-        level: signal.dvalue,
-        message: signal.message,
+        day: new Date(level_code.jour),
+        strDay: jours[new Date(level_code.jour).getDay()],
+        level: level_code.dvalue,
+        message: level_code.message,
         hours: heures
       });
     }
